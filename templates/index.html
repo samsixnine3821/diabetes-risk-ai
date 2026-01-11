@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Diabetes Risk Assessment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #eef2f3, #d9e6f2);
+            margin: 0;
+        }
+        .container {
+            max-width: 480px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        h1 { text-align: center; }
+        label { font-weight: bold; }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0 15px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f7f9fb;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 13px;
+            color: #95a5a6;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>AI Diabetes Risk Assessment</h1>
+
+    <form method="POST">
+        <label>Glucose (mg/dL)</label>
+        <input type="number" name="glucose" required>
+
+        <label>Blood Pressure (mm Hg)</label>
+        <input type="number" name="blood_pressure">
+
+        <label>BMI</label>
+        <input type="number" step="0.1" name="bmi" required>
+
+        <label>Age</label>
+        <input type="number" name="age" required>
+
+        <button type="submit">Assess Risk</button>
+    </form>
+
+    {% if result %}
+    <div class="result-box" style="border-left: 6px solid {{ risk_colour }}">
+        <h3 style="color: {{ risk_colour }}">{{ result }}</h3>
+        <p><b>Explanation:</b> {{ explanation }}</p>
+        <p><b>Advice:</b> {{ advice }}</p>
+
+        <form method="POST" action="/report">
+            {% for k,v in inputs.items() %}
+            <input type="hidden" name="{{ k }}" value="{{ v }}">
+            {% endfor %}
+            <input type="hidden" name="result" value="{{ result }}">
+            <input type="hidden" name="risk_percent" value="{{ risk_percent }}">
+            <input type="hidden" name="explanation" value="{{ explanation }}">
+            <input type="hidden" name="advice" value="{{ advice }}">
+            <button type="submit">Download PDF Report</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="footer">Created by Sam</div>
+</div>
+</body>
+</html>
